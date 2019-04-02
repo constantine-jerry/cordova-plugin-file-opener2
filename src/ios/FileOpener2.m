@@ -53,8 +53,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	}
 
 	dispatch_async(dispatch_get_main_queue(), ^{
-		NSURL *fileURL = [NSURL URLWithString:[path stringByRemovingPercentEncoding]];
 
+        NSString* filePath = [path stringByRemovingPercentEncoding];
+        NSURL *fileURL = nil;
+        if ([filePath rangeOfString:@"file://"].location == 0) {
+            fileURL = [NSURL fileURLWithPath:[filePath substringFromIndex:7]];
+        }
+        else {
+            fileURL = [NSURL URLWithString:filePath];
+        }
 		localFile = fileURL.path;
 
 	    NSLog(@"looking for file at %@", fileURL);
